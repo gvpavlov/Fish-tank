@@ -1,0 +1,2 @@
+class Coin:
+    pass
