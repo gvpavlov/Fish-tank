@@ -27,7 +27,6 @@ class Aquarium(QMainWindow):
     def paintEvent(self, event):
         canvas = QtGui.QPainter()
         canvas.begin(self)
-        #canvas.scale(self.size().width(), self.size().height())
         canvas.setPen(QtCore.Qt.NoPen)
         canvas.drawPixmap(0, 0, self.background.scaled(1000, 700))
         self.draw_alien(canvas)
@@ -48,15 +47,22 @@ class Aquarium(QMainWindow):
     def set_alien_frame(self, direction):
         if self.previous_direction == direction:
             self.alien_frameX += 160
-        if self.alien_frameX >= 1600:
+            if self.alien_frameX >= 1600:
+                self.alien_frameX = 0
+                if self.alien_frameY == 160:
+                    self.alien_frameY = 0
+        # Start rotation if the different directions are left and right.
+        elif direction == (-1, 0) or direction == (1, 0):
             self.alien_frameX = 0
-        print(self.alien_frameX)
+            self.alien_frameY = 160
         self.previous_direction = direction
-
 
     def draw_alien(self, canvas):
         self.alien_image = QtGui.QPixmap(os.path
             .join(resource_directory, "alien.png"))
+        alien_image = self.alien_image.toImage()
+        alien_image = alien_image.mirrored(True, False)
+        self.alien_image_mirrored = QtGui.QPixmap().fromImage(alien_image)
         canvas.drawPixmap(self.game.alien.x, self.game.alien.y,
                           self.alien_image, self.alien_frameX,
                           self.alien_frameY, 160, 160)
@@ -64,7 +70,7 @@ class Aquarium(QMainWindow):
     """ Objects are accessible through game. """
     def set_objects(self):
         self.game = Game()
-        self.previous_direction = (-1, 0)
+        self.previous_direction = (1, 0)
         self.alien_frameX = 0
         self.alien_frameY = 0
         self.background = QtGui.QPixmap(
