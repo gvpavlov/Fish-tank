@@ -1,16 +1,15 @@
-import helper
-import alien
-import food
-import coin
-import gold_fish
+from alien import Alien
+
+""" Movement directions """
+LEFT = (-1, 0)
+RIGHT = (1, 0)
+UP = (0, -1)
+DOWN = (0, 1)
 
 
-# Will combine the different game clases and
-# will be in charge of their interraction with one another.
 class Game:
     def __init__(self):
-        # Will take amounts for all items from the level file
-        self.fishes = []
-        self.aliens = []
-        self.food = Food()
-        self.coins = []
+        self.set_objects()
+
+    def set_objects(self):
+        self.alien = Alien(800, 100, LEFT)
