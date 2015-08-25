@@ -1,4 +1,5 @@
 from alien import Alien
+from unit import Directions
 
 """ Movement directions """
 LEFT = (-1, 0)
@@ -12,4 +13,4 @@ class Game:
         self.set_objects()
 
     def set_objects(self):
-        self.alien = Alien(800, 100, LEFT)
+        self.alien = Alien(300, 300, Directions.left)
