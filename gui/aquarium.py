@@ -12,6 +12,7 @@ resource_directory = os.path.join(current_directory, "resources")
 sys.path.append(os.path.join(parent_directory, "core"))
 
 from game import Game
+from unit import Directions
 
 
 class Aquarium(QMainWindow):
@@ -20,6 +21,7 @@ class Aquarium(QMainWindow):
         self.ui = Ui_aquarium()
         self.ui.setupUi(self)
         self.set_objects()
+        self.load_pictures()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.movement)
         self.timer.start(40)
@@ -28,7 +30,8 @@ class Aquarium(QMainWindow):
         canvas = QtGui.QPainter()
         canvas.begin(self)
         canvas.setPen(QtCore.Qt.NoPen)
-        canvas.drawPixmap(0, 0, self.background.scaled(1000, 700))
+        canvas.drawPixmap(0, 0, self.background.scaled(self.size().width(),
+                          self.size().height()))
         self.draw_alien(canvas)
 
     def keyPressEvent(self, event):
@@ -46,32 +49,59 @@ class Aquarium(QMainWindow):
     """ Determines which image will be used for the next repaint. """
     def set_alien_frame(self, direction):
         if self.previous_direction == direction:
-            self.alien_frameX += 160
-            if self.alien_frameX >= 1600:
-                self.alien_frameX = 0
-                if self.alien_frameY == 160:
+            if self.mirrored_rotation:
+                self.alien_frameX -= 160
+                if self.alien_frameX <= 0:
+                    self.alien_frameX = 0
                     self.alien_frameY = 0
-        # Start rotation if the different directions are left and right.
-        elif direction == (-1, 0) or direction == (1, 0):
+                    self.mirrored_rotation = False
+            else:
+                self.alien_frameX += 160
+                if self.alien_frameX >= 1600:
+                    self.alien_frameX = 0
+                    self.alien_frameY = 0
+
+        # Start rotation if the different directions are left and right
+        # AND the current picture is in the other directionn.
+        elif ((direction == Directions.right and not self.mirrored) or
+              (direction == Directions.left and self.mirrored)):
             self.alien_frameX = 0
             self.alien_frameY = 160
+            # If the rotation is from right to left take the images in reverse.
+            if direction == Directions.left:
+                self.mirrored_rotation = True
+                self.alien_frameX = 1440
+
+        # Use the appropriate image based on direction.
+        if direction == Directions.left:
+            self.mirrored = False
+        elif direction == Directions.right:
+            self.mirrored = True
         self.previous_direction = direction
 
     def draw_alien(self, canvas):
+        if self.mirrored:
+            image = self.alien_image_mirrored
+        else:
+            image = self.alien_image
+        canvas.drawPixmap(self.game.alien.x, self.game.alien.y,
+                          image, self.alien_frameX,
+                          self.alien_frameY, 160, 160)
+
+    def set_objects(self):
+        self.game = Game()
+
+    def load_pictures(self):
         self.alien_image = QtGui.QPixmap(os.path
             .join(resource_directory, "alien.png"))
+        self.previous_direction = self.game.alien.direction
+        self.alien_frameX = 0
+        self.alien_frameY = 0
         alien_image = self.alien_image.toImage()
         alien_image = alien_image.mirrored(True, False)
         self.alien_image_mirrored = QtGui.QPixmap().fromImage(alien_image)
-        canvas.drawPixmap(self.game.alien.x, self.game.alien.y,
-                          self.alien_image, self.alien_frameX,
-                          self.alien_frameY, 160, 160)
+        self.mirrored = False
+        self.mirrored_rotation = False
 
-    """ Objects are accessible through game. """
-    def set_objects(self):
-        self.game = Game()
-        self.previous_direction = (1, 0)
-        self.alien_frameX = 0
-        self.alien_frameY = 0
         self.background = QtGui.QPixmap(
             os.path.join(resource_directory, "background.png"))
