@@ -13,4 +13,9 @@ class Game:
         self.set_objects()
 
     def set_objects(self):
-        self.alien = Alien(300, 300, Directions.left)
+        self.alien = [
+                      Alien(300, 300, Directions.left),
+                      Alien(100, 300, Directions.left),
+                      Alien(300, 500, Directions.left),
+                      Alien(300, 200, Directions.left)
+                     ]
