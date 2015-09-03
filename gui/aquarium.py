@@ -20,7 +20,7 @@ class Aquarium(QMainWindow):
         super(Aquarium, self).__init__()
         self.ui = Ui_aquarium()
         self.ui.setupUi(self)
-        self.set_objects()
+        self.game = Game()
         self.load_pictures()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.movement)
@@ -44,10 +44,6 @@ class Aquarium(QMainWindow):
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
             self.close()
-
-    """ Loads all lists of objects and sets the current ones for drawing. """
-    def set_objects(self):
-        self.game = Game()
 
     def load_pictures(self):
         # Alien
@@ -94,73 +90,10 @@ class Aquarium(QMainWindow):
             mirror = mirror.mirrored(True, False)
             mirrored[key] = QtGui.QPixmap().fromImage(mirror)
 
-    """ Incorporates all objects' movement and calls the repaint event. """
     def movement(self):
-        self.move_alien()
-        self.move_fish()
-        self.sink_coin()
-        self.sink_food()
+        """ Incorporates all objects' movement and calls the repaint event."""
+        self.game.move()
         self.repaint()
-
-    def move_alien(self):
-        for alien in self.game.aliens:
-            alien.move()
-            self.set_move_frame(alien, 160, 1600)
-
-    def move_fish(self):
-        for fish in self.game.fishes:
-            fish.move()
-            self.set_move_frame(fish, 80, 800)
-
-    def sink_coin(self):
-        for coin in self.game.coins:
-                coin.sink()
-                self.set_sink_frame(coin, 72, 720)
-        self.game.coins = [coin for coin in self.game.coins if coin.sinking]
-
-    def sink_food(self):
-        for food in self.game.food:
-                food.sink()
-                self.set_sink_frame(food, 40, 400)
-        self.game.food = [food for food in self.game.food  if food.sinking]
-
-    """ Determines which image will be used for the next repaint. """
-    def set_move_frame(self, unit, frame_width, width):
-        if unit.previous_direction == unit.direction:
-            if unit.mirrored_rotation:
-                unit.frame -= frame_width
-                if unit.frame <= 0:
-                    unit.frame = 0
-                    unit.state = 'swim'
-                    unit.mirrored_rotation = False
-            else:
-                unit.frame += frame_width
-                if unit.frame >= width:
-                    unit.frame = 0
-                    unit.state = 'swim'
-        # Start rotation if the different directions are left and right
-        # AND the current picture is in the other direction.
-        elif ((unit.direction == Directions.right and
-               not unit.mirrored) or
-              (unit.direction == Directions.left and
-               unit.mirrored)):
-            unit.frame = 0
-            unit.state = 'turn'
-            # If the rotation is from right to left take the images in reverse.
-            if unit.direction == Directions.left:
-                unit.mirrored_rotation = True
-                unit.frame = width - frame_width
-        # Use the appropriate image based on direction.
-        if unit.direction == Directions.left:
-            unit.mirrored = False
-        elif unit.direction == Directions.right:
-            unit.mirrored = True
-        unit.previous_direction = unit.direction
-
-    def set_sink_frame(self, item, frame_width, width):
-        item.frame += frame_width
-        if item.frame >= width:
-            item.frame = 0
 
     def draw_alien(self, canvas, alien):
         if alien.mirrored:
