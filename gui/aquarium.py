@@ -48,37 +48,37 @@ class Aquarium(QMainWindow):
     def load_pictures(self):
         # Alien
         self.alien_images = {
-            'lion': QtGui.QPixmap(os.path
-                .join(resource_directory, "alien.png")),
-            'blue': QtGui.QPixmap(os.path
-                .join(resource_directory, "alien2.png"))}
+            'lion': QtGui.QPixmap(
+                os.path.join(resource_directory, "alien.png")),
+            'blue': QtGui.QPixmap(
+                os.path.join(resource_directory, "alien2.png"))}
         self.alien_images_mirrored = {}.fromkeys(self.alien_images)
         self.fill_mirrored(self.alien_images, self.alien_images_mirrored)
 
         # Fish
         self.fish_images = {
-            'swim': QtGui.QPixmap(os.path
-                .join(resource_directory, "fish_swim.png")),
-            'eat': QtGui.QPixmap(os.path
-                .join(resource_directory, "fish_eat.png")),
-            'turn': QtGui.QPixmap(os.path
-                .join(resource_directory, "fish_turn.png")),
-            'hungry_swim': QtGui.QPixmap(os.path
-                .join(resource_directory, "hungry_swim.png")),
-            'hungry_eat': QtGui.QPixmap(os.path
-                .join(resource_directory, "hungry_eat.png")),
-            'hungry_turn': QtGui.QPixmap(os.path
-                .join(resource_directory, "hungry_turn.png"))}
+            'swim': QtGui.QPixmap(
+                os.path.join(resource_directory, "fish_swim.png")),
+            'eat': QtGui.QPixmap(
+                os.path.join(resource_directory, "fish_eat.png")),
+            'turn': QtGui.QPixmap(
+                os.path.join(resource_directory, "fish_turn.png")),
+            'hungry_swim': QtGui.QPixmap(
+                os.path.join(resource_directory, "hungry_swim.png")),
+            'hungry_eat': QtGui.QPixmap(
+                os.path.join(resource_directory, "hungry_eat.png")),
+            'hungry_turn': QtGui.QPixmap(
+                os.path.join(resource_directory, "hungry_turn.png"))}
         self.fish_images_mirrored = {}.fromkeys(self.fish_images)
         self.fill_mirrored(self.fish_images, self.fish_images_mirrored)
 
         # Food
-        self.food_image = QtGui.QPixmap(os.path
-            .join(resource_directory, "food.png"))
+        self.food_image = QtGui.QPixmap(
+            os.path.join(resource_directory, "food.png"))
 
         # Coin
-        self.coin_image = QtGui.QPixmap(os.path
-                .join(resource_directory, "coin.png"))
+        self.coin_image = QtGui.QPixmap(
+            os.path.join(resource_directory, "coin.png"))
 
         # Background
         self.background = QtGui.QPixmap(
