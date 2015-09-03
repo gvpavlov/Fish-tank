@@ -32,76 +32,126 @@ class Aquarium(QMainWindow):
         canvas.setPen(QtCore.Qt.NoPen)
         canvas.drawPixmap(0, 0, self.background.scaled(self.size().width(),
                           self.size().height()))
-        for alien in self.game.alien:
+        for alien in self.game.aliens:
             self.draw_alien(canvas, alien)
+        for fish in self.game.fishes:
+            self.draw_fish(canvas, fish)
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
             self.close()
 
+    """ Loads all lists of objects and sets the current ones for drawing. """
     def set_objects(self):
         self.game = Game()
-        self.current_alien = self.game.alien[0]
 
     def load_pictures(self):
-        self.alien_image = QtGui.QPixmap(os.path
-            .join(resource_directory, "alien2.png"))
-        alien_image = self.alien_image.toImage()
-        alien_image = alien_image.mirrored(True, False)
-        self.alien_image_mirrored = QtGui.QPixmap().fromImage(alien_image)
+        # Alien
+        self.alien_images = {
+            'lion': QtGui.QPixmap(os.path
+                .join(resource_directory, "alien.png")),
+            'blue': QtGui.QPixmap(os.path
+                .join(resource_directory, "alien2.png"))}
+        self.alien_images_mirrored = {}.fromkeys(self.alien_images)
+        for key, value in self.alien_images.items():
+            mirror = value.toImage()
+            mirror = mirror.mirrored(True, False)
+            self.alien_images_mirrored[key] = QtGui.QPixmap().fromImage(mirror)
+
+        # Fish
+        self.fish_images = {
+            'swim': QtGui.QPixmap(os.path
+                .join(resource_directory, "fish_swim.png")),
+            'eat': QtGui.QPixmap(os.path
+                .join(resource_directory, "fish_eat.png")),
+            'turn': QtGui.QPixmap(os.path
+                .join(resource_directory, "fish_turn.png")),
+            'hungry_swim': QtGui.QPixmap(os.path
+                .join(resource_directory, "hungry_swim.png")),
+            'hungry_eat': QtGui.QPixmap(os.path
+                .join(resource_directory, "hungry_eat.png")),
+            'hungry_turn': QtGui.QPixmap(os.path
+                .join(resource_directory, "hungry_turn.png"))}
+
+        self.fish_images_mirrored = {}.fromkeys(self.fish_images)
+        for key, value in self.fish_images.items():
+            mirror = value.toImage()
+            mirror = mirror.mirrored(True, False)
+            self.fish_images_mirrored[key] = QtGui.QPixmap().fromImage(mirror)
 
         self.background = QtGui.QPixmap(
             os.path.join(resource_directory, "background.png"))
 
+    """ Incorporates all objects' movement and calls the repaint event. """
     def movement(self):
         self.move_alien()
+        self.move_fish()
         self.repaint()
 
     def move_alien(self):
-        for alien in self.game.alien:
-            self.current_alien = alien
+        for alien in self.game.aliens:
             alien.move()
-            self.set_alien_frame(alien.direction)
+            self.set_frame(alien, 160, 1600)
+
+    def move_fish(self):
+        for fish in self.game.fishes:
+            fish.move()
+            self.set_frame(fish, 80, 800)
 
     """ Determines which image will be used for the next repaint. """
-    def set_alien_frame(self, direction):
-        if self.current_alien.previous_direction == direction:
-            if self.current_alien.mirrored_rotation:
-                self.current_alien.frameX -= 160
-                if self.current_alien.frameX <= 0:
-                    self.current_alien.frameX = 0
-                    self.current_alien.frameY = 0
-                    self.current_alien.mirrored_rotation = False
+    def set_frame(self, unit, frame_width, width):
+        if unit.previous_direction == unit.direction:
+            if unit.mirrored_rotation:
+                unit.frame_x -= frame_width
+                if unit.frame_x <= 0:
+                    unit.frame_x = 0
+                    unit.state = 'swim'
+                    unit.mirrored_rotation = False
             else:
-                self.current_alien.frameX += 160
-                if self.current_alien.frameX >= 1600:
-                    self.current_alien.frameX = 0
-                    self.current_alien.frameY = 0
+                unit.frame_x += frame_width
+                if unit.frame_x >= width:
+                    unit.frame_x = 0
+                    unit.state = 'swim'
 
         # Start rotation if the different directions are left and right
-        # AND the current picture is in the other directionn.
-        elif ((direction == Directions.right and not self.current_alien.mirrored) or
-              (direction == Directions.left and self.current_alien.mirrored)):
-            self.current_alien.frameX = 0
-            self.current_alien.frameY = 160
+        # AND the current picture is in the other direction.
+        elif ((unit.direction == Directions.right and
+               not unit.mirrored) or
+              (unit.direction == Directions.left and
+               unit.mirrored)):
+            unit.frame_x = 0
+            unit.state = 'turn'
             # If the rotation is from right to left take the images in reverse.
-            if direction == Directions.left:
-                self.current_alien.mirrored_rotation = True
-                self.current_alien.frameX = 1440
+            if unit.direction == Directions.left:
+                unit.mirrored_rotation = True
+                unit.frame_x = width - frame_width
 
         # Use the appropriate image based on direction.
-        if direction == Directions.left:
-            self.current_alien.mirrored = False
-        elif direction == Directions.right:
-            self.current_alien.mirrored = True
-        self.current_alien.previous_direction = direction
+        if unit.direction == Directions.left:
+            unit.mirrored = False
+        elif unit.direction == Directions.right:
+            unit.mirrored = True
+        unit.previous_direction = unit.direction
 
     def draw_alien(self, canvas, alien):
-        print(alien)
         if alien.mirrored:
-            image = self.alien_image_mirrored
+            image = self.alien_images_mirrored[alien.kind]
         else:
-            image = self.alien_image
-        canvas.drawPixmap(alien.x, alien.y,
-                          image, alien.frameX,
-                          alien.frameY, 160, 160)
+            image = self.alien_images[alien.kind]
+        if alien.state == 'swim':
+            state = 0
+        else:
+            state = 160
+        canvas.drawPixmap(alien.x, alien.y, image,
+                          alien.frame_x, state, 160, 160)
+
+    def draw_fish(self, canvas, fish):
+        state = fish.state
+        if fish.hungry:
+            state = 'hungry_' + state
+        if fish.mirrored:
+            image = self.fish_images_mirrored[state]
+        else:
+            image = self.fish_images[state]
+        canvas.drawPixmap(fish.x, fish.y, image,
+                          fish.frame_x, fish.size * 80, 80, 80)

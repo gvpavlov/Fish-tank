@@ -19,14 +19,22 @@ class Unit:
         self.direction = direction
         self.time = time()
 
+        # Variables for choosing the correct image for each unit.
+        self.state = 'swim'
+        self.previous_direction = direction
+        self.frame_x = 0
+        self.frame_y = 0
+        self.mirrored = False
+        self.mirrored_rotation = False
+
     """ General movement pattern for every creature in the game. """
     def move_random(self):
         if self.time < time():
             self.change_direction(self.direction)
             self.time = time() + randint(3, 5)
         self.constrain()
-        self.x += self.direction[0] * 5
-        self.y += self.direction[1] * 5
+        self.x += self.direction[0] * 3
+        self.y += self.direction[1] * 3
 
     """ Picks a random direction, different from the current one. """
     def change_direction(self, current_direction):

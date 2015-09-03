@@ -1,5 +1,7 @@
 from alien import Alien
+from fish import Fish
 from unit import Directions
+from random import randint
 
 """ Movement directions """
 LEFT = (-1, 0)
@@ -13,9 +15,29 @@ class Game:
         self.set_objects()
 
     def set_objects(self):
-        self.alien = [
-                      Alien(300, 300, Directions.left),
-                      Alien(100, 300, Directions.left),
-                      Alien(300, 500, Directions.left),
-                      Alien(300, 200, Directions.left)
-                     ]
+        self.aliens = [Alien(randint(0, 600), randint(0, 600),
+                             Directions.left, 'lion'),
+                       Alien(randint(0, 600), randint(0, 600),
+                             Directions.left, 'lion'),
+                       Alien(randint(0, 600), randint(0, 600),
+                             Directions.left),
+                       Alien(randint(0, 600), randint(0, 600),
+                             Directions.left)]
+        self.fishes = [Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 0),
+                       Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 0),
+                       Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 0),
+                       Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 1),
+                       Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 1),
+                       Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 1),
+                       Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 2),
+                       Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 2),
+                       Fish(randint(0, 600), randint(0, 600),
+                            Directions.left, 2)]
