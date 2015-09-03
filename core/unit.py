@@ -22,8 +22,7 @@ class Unit:
         # Variables for choosing the correct image for each unit.
         self.state = 'swim'
         self.previous_direction = direction
-        self.frame_x = 0
-        self.frame_y = 0
+        self.frame = 0
         self.mirrored = False
         self.mirrored_rotation = False
 

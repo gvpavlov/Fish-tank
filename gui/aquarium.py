@@ -36,6 +36,10 @@ class Aquarium(QMainWindow):
             self.draw_alien(canvas, alien)
         for fish in self.game.fishes:
             self.draw_fish(canvas, fish)
+        for coin in self.game.coins:
+            self.draw_coin(canvas, coin)
+        for food in self.game.food:
+            self.draw_food(canvas, food)
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
@@ -69,10 +73,18 @@ class Aquarium(QMainWindow):
                 .join(resource_directory, "hungry_eat.png")),
             'hungry_turn': QtGui.QPixmap(os.path
                 .join(resource_directory, "hungry_turn.png"))}
-
         self.fish_images_mirrored = {}.fromkeys(self.fish_images)
         self.fill_mirrored(self.fish_images, self.fish_images_mirrored)
 
+        # Food
+        self.food_image = QtGui.QPixmap(os.path
+            .join(resource_directory, "food.png"))
+
+        # Coin
+        self.coin_image = QtGui.QPixmap(os.path
+                .join(resource_directory, "coin.png"))
+
+        # Background
         self.background = QtGui.QPixmap(
             os.path.join(resource_directory, "background.png"))
 
@@ -86,52 +98,69 @@ class Aquarium(QMainWindow):
     def movement(self):
         self.move_alien()
         self.move_fish()
+        self.sink_coin()
+        self.sink_food()
         self.repaint()
 
     def move_alien(self):
         for alien in self.game.aliens:
             alien.move()
-            self.set_frame(alien, 160, 1600)
+            self.set_move_frame(alien, 160, 1600)
 
     def move_fish(self):
         for fish in self.game.fishes:
             fish.move()
-            self.set_frame(fish, 80, 800)
+            self.set_move_frame(fish, 80, 800)
+
+    def sink_coin(self):
+        for coin in self.game.coins:
+                coin.sink()
+                self.set_sink_frame(coin, 72, 720)
+        self.game.coins = [coin for coin in self.game.coins if coin.sinking]
+
+    def sink_food(self):
+        for food in self.game.food:
+                food.sink()
+                self.set_sink_frame(food, 40, 400)
+        self.game.food = [food for food in self.game.food  if food.sinking]
 
     """ Determines which image will be used for the next repaint. """
-    def set_frame(self, unit, frame_width, width):
+    def set_move_frame(self, unit, frame_width, width):
         if unit.previous_direction == unit.direction:
             if unit.mirrored_rotation:
-                unit.frame_x -= frame_width
-                if unit.frame_x <= 0:
-                    unit.frame_x = 0
+                unit.frame -= frame_width
+                if unit.frame <= 0:
+                    unit.frame = 0
                     unit.state = 'swim'
                     unit.mirrored_rotation = False
             else:
-                unit.frame_x += frame_width
-                if unit.frame_x >= width:
-                    unit.frame_x = 0
+                unit.frame += frame_width
+                if unit.frame >= width:
+                    unit.frame = 0
                     unit.state = 'swim'
-
         # Start rotation if the different directions are left and right
         # AND the current picture is in the other direction.
         elif ((unit.direction == Directions.right and
                not unit.mirrored) or
               (unit.direction == Directions.left and
                unit.mirrored)):
-            unit.frame_x = 0
+            unit.frame = 0
             unit.state = 'turn'
             # If the rotation is from right to left take the images in reverse.
             if unit.direction == Directions.left:
                 unit.mirrored_rotation = True
-                unit.frame_x = width - frame_width
-
+                unit.frame = width - frame_width
         # Use the appropriate image based on direction.
         if unit.direction == Directions.left:
             unit.mirrored = False
         elif unit.direction == Directions.right:
             unit.mirrored = True
         unit.previous_direction = unit.direction
+
+    def set_sink_frame(self, item, frame_width, width):
+        item.frame += frame_width
+        if item.frame >= width:
+            item.frame = 0
 
     def draw_alien(self, canvas, alien):
         if alien.mirrored:
@@ -143,7 +172,7 @@ class Aquarium(QMainWindow):
         else:
             state = 160
         canvas.drawPixmap(alien.x, alien.y, image,
-                          alien.frame_x, state, 160, 160)
+                          alien.frame, state, 160, 160)
 
     def draw_fish(self, canvas, fish):
         state = fish.state
@@ -154,4 +183,12 @@ class Aquarium(QMainWindow):
         else:
             image = self.fish_images[state]
         canvas.drawPixmap(fish.x, fish.y, image,
-                          fish.frame_x, fish.size * 80, 80, 80)
+                          fish.frame, fish.size * 80, 80, 80)
+
+    def draw_coin(self, canvas, coin):
+        canvas.drawPixmap(coin.x, coin.y, self.coin_image,
+                          coin.frame, coin.worth * 72, 72, 72)
+
+    def draw_food(self, canvas, food):
+        canvas.drawPixmap(food.x, food.y, self.food_image,
+                          food.frame, 0, 40, 40)

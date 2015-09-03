@@ -1,5 +1,7 @@
 from alien import Alien
 from fish import Fish
+from coin import Coin
+from food import Food
 from unit import Directions
 from random import randint
 
@@ -41,3 +43,11 @@ class Game:
                             Directions.left, 2),
                        Fish(randint(0, 600), randint(0, 600),
                             Directions.left, 2)]
+        self.coins = [Coin(100, 0, 0),
+                    Coin(200, 0, 0),
+                    Coin(500, 0, 1),
+                    Coin(200, 0, 1)]
+        self.food = [Food(160, 0),
+                     Food(232, 0),
+                     Food(554, 0),
+                     Food(694, 0)]
