@@ -53,10 +53,7 @@ class Aquarium(QMainWindow):
             'blue': QtGui.QPixmap(os.path
                 .join(resource_directory, "alien2.png"))}
         self.alien_images_mirrored = {}.fromkeys(self.alien_images)
-        for key, value in self.alien_images.items():
-            mirror = value.toImage()
-            mirror = mirror.mirrored(True, False)
-            self.alien_images_mirrored[key] = QtGui.QPixmap().fromImage(mirror)
+        self.fill_mirrored(self.alien_images, self.alien_images_mirrored)
 
         # Fish
         self.fish_images = {
@@ -74,13 +71,16 @@ class Aquarium(QMainWindow):
                 .join(resource_directory, "hungry_turn.png"))}
 
         self.fish_images_mirrored = {}.fromkeys(self.fish_images)
-        for key, value in self.fish_images.items():
-            mirror = value.toImage()
-            mirror = mirror.mirrored(True, False)
-            self.fish_images_mirrored[key] = QtGui.QPixmap().fromImage(mirror)
+        self.fill_mirrored(self.fish_images, self.fish_images_mirrored)
 
         self.background = QtGui.QPixmap(
             os.path.join(resource_directory, "background.png"))
+
+    def fill_mirrored(self, normal_images, mirrored):
+        for key, value in normal_images.items():
+            mirror = value.toImage()
+            mirror = mirror.mirrored(True, False)
+            mirrored[key] = QtGui.QPixmap().fromImage(mirror)
 
     """ Incorporates all objects' movement and calls the repaint event. """
     def movement(self):
