@@ -9,7 +9,6 @@ class Fish(Unit, SinkingItem):
         Unit.__init__(self, x, y, direction, 80, radius)
         SinkingItem.__init__(self, x, y, 80, radius)
         self.hungry = False
-        self.dead = False
         self.growth = 0
         # Fish size: 0 - small, 1 - normal, 2 - big
         self.size = size
