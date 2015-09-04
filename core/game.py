@@ -15,6 +15,7 @@ class Game:
         self.score = 100
         self.start_time = time()
         self.tracked_time = time()
+        self.weapon_power = 11
 
     def set_objects(self):
         """ Each level starts with only 2 fish. """
@@ -52,6 +53,10 @@ class Game:
         self.fishes.append(Fish(randint(0, 600), randint(0, 600),
                            Directions.left, 0))
 
+    def upgrade_weapon(self):
+        """ Upgrades weapon. Used by sidebar button. """
+        self.weapon_power += self.weapon_power
+
     def mouse_press(self, x, y):
         """ Takes action depending on what was clicked. """
         empty_click = True
@@ -62,7 +67,7 @@ class Game:
             empty_click = False
         alien = [alien for alien in self.aliens if self.clicked(x, y, alien)]
         if alien:
-            alien[0].hit()
+            alien[0].hit(self.weapon_power)
             empty_click = False
             if alien[0].is_dead():
                 self.aliens.remove(alien[0])
@@ -71,9 +76,6 @@ class Game:
             if self.score:
                 self.food.append(Food(x - 20, y - 20))
                 self.score -= 5
-        #remove this when sidebar is adeed
-        print("Score: ", self.score)
-
 
     def clicked(self, x, y, unit):
         """ Checks if the mouse has clicked the unit. """
