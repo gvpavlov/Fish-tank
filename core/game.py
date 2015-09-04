@@ -27,7 +27,7 @@ class Game:
         self.fishes = [Fish(randint(0, 600), randint(0, 600),
                             Directions.left, 0),
                        Fish(randint(0, 600), randint(0, 600),
-                            Directions.left, 2)]
+                            Directions.left, 0)]
         self.aliens = []
         self.coins = []
         self.food = []
@@ -44,9 +44,14 @@ class Game:
         self.tracked_time = elapsed
 
     def spawn_alien(self):
-        """ Spawns an alien at a random position. """
+        """ Spawns an alien at a random location. """
         self.aliens.append(Alien(randint(100, 500), randint(100, 500),
-                             Directions.left, randint(0, 1)))
+                           Directions.left, randint(0, 1)))
+
+    def spawn_fish(self):
+        """ Spawns a fish at a random location. """
+        self.fishes.append(Fish(randint(0, 600), randint(0, 600),
+                           Directions.left, 0))
 
     def mouse_press(self, x, y):
         """ Takes action depending on what was clicked. """
@@ -67,6 +72,7 @@ class Game:
             if self.score:
                 self.food.append(Food(x - 20, y - 20))
                 self.score -= 5
+        #remove this when sidebar is adeed
         print("Score: ", self.score)
 
 
