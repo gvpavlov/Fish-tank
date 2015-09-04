@@ -6,3 +6,11 @@ class Alien(Unit):
         Unit.__init__(self, x, y, direction, 160, 70)
         self.health = 100
         self.kind = kind
+
+    def hit(self):
+        self.health -= 5
+
+    def dead(self):
+        if self.health <= 0:
+            return True
+        return False

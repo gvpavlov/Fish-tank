@@ -45,6 +45,10 @@ class Aquarium(QMainWindow):
         if event.key() == QtCore.Qt.Key_Escape:
             self.close()
 
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.game.mouse_press(event.x(), event.y())
+
     def load_pictures(self):
         # Alien
         self.alien_images = {

@@ -17,6 +17,7 @@ class Game:
     """ Core class. """
     def __init__(self):
         self.set_objects()
+        self.score = 0
 
     def set_objects(self):
         self.aliens = [Alien(randint(0, 600), randint(0, 600),
@@ -49,6 +50,34 @@ class Game:
                      Food(232, 0),
                      Food(554, 0),
                      Food(694, 0)]
+
+    def mouse_press(self, x, y):
+        """ Takes action depending on what was clicked. """
+        empty_click = True
+        coin = [coin for coin in self.coins if self.clicked(x, y, coin)]
+        if coin:
+            self.score += (coin[0].worth + 1) * 25
+            self.coins.remove(coin[0])
+            empty_click = False
+        alien = [alien for alien in self.aliens if self.clicked(x, y, alien)]
+        if alien:
+            alien[0].hit()
+            empty_click = False
+            if alien[0].dead():
+                self.aliens.remove(alien[0])
+                self.score += 200
+        if empty_click:
+            if self.score:
+                self.food.append(Food(x - 20, y - 20))
+                self.score -= 5
+        print("Score: ", self.score)
+
+
+    def clicked(self, x, y, unit):
+        """ Checks if the mouse has clicked the unit. """
+        if self.distance((x, y), unit.collision_circle()) <= unit.radius:
+            return True
+        return False
 
     def move(self):
         self.move_alien()
