@@ -7,12 +7,6 @@ from random import randint
 from math import sqrt
 from time import time
 
-""" Movement directions """
-LEFT = (-1, 0)
-RIGHT = (1, 0)
-UP = (0, -1)
-DOWN = (0, 1)
-
 
 class Game:
     """ Core class. """
@@ -39,8 +33,12 @@ class Game:
         self.tracked_time prevents mupltiple spawns in the same second.
         """
         elapsed = int(time() - self.start_time) + 1
+        # Alien
         if (self.tracked_time != elapsed) and ((elapsed % 40) == 0):
             self.spawn_alien()
+        # Fish
+        for fish in self.fishes:
+            fish.hungry_check()
         self.tracked_time = elapsed
 
     def spawn_alien(self):
@@ -49,7 +47,7 @@ class Game:
                            Directions.left, randint(0, 1)))
 
     def spawn_fish(self):
-        """ Spawns a fish at a random location. """
+        """ Spawns a fish at a random location. Used by sidebar button. """
         self.fishes.append(Fish(randint(0, 600), randint(0, 600),
                            Directions.left, 0))
 
@@ -86,8 +84,8 @@ class Game:
         self.track_time()
         self.alien_action()
         self.fish_action()
-        self.sink_item(self.coins)
-        self.sink_item(self.food)
+        self.sink_coin()
+        self.sink_food()
 
     def alien_action(self):
         """ Chases closest fish or moves randomly if there are none. """
@@ -102,9 +100,11 @@ class Game:
             self.set_move_frame(alien, alien.image_size, 1600)
 
     def fish_action(self):
-        """ Chases closest food if hungry or moves randomly otherwise. """
+        """
+        Chases closest food if hungry, moves randomly
+        otherwise, dies if not fed in time.
+        """
         for fish in self.fishes:
-            # TODO: add starve
             if fish.dead:
                 fish.sink()
                 if not fish.sinking:
@@ -114,6 +114,7 @@ class Game:
                     closest_food = self.get_closest(fish, self.food)
                     fish.chase(closest_food)
                     if self.collision(fish, closest_food):
+                        fish.eat()
                         self.food.remove(closest_food)
                 else:
                     fish.move_random()
@@ -130,19 +131,31 @@ class Game:
                 closest = prey
         return closest
 
-    def sink_item(self, items):
-        for item in items:
-            item.sink()
-            self.set_sink_frame(item, item.image_size, 400)
-        items = [item for item in items if item.sinking]
+    def sink_coin(self):
+        for coin in self.coins:
+            coin.sink()
+            self.set_sink_frame(coin, coin.image_size, 400)
+        self.coins = [coin for coin in self.coins if coin.sinking]
+
+    def sink_food(self):
+        for food in self.food:
+            food.sink()
+            self.set_sink_frame(food, food.image_size, 400)
+        self.food = [food for food in self.food if food.sinking]
 
     def set_move_frame(self, unit, frame_width, width):
         """ Determines which image will be used for the next repaint. """
         if unit.previous_direction == unit.direction:
             if unit.dead:
-                unit.frame += frame_width
-                if unit.frame >= width:
-                    unit.frame = width - frame_width
+                if unit.mirrored:
+                    unit.frame -= frame_width
+                else:
+                    unit.frame += frame_width
+                if unit.frame >= width or unit.frame <= 0:
+                    if unit.mirrored:
+                        unit.frame = 0
+                    else:
+                        unit.frame = width - frame_width
             else:
                 if unit.mirrored_rotation:
                     unit.frame -= frame_width

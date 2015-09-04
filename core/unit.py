@@ -82,7 +82,7 @@ class Unit:
         self.x += self.direction[0] * speed
         self.y += self.direction[1] * speed
         # Stops chaser from spinning and never hitting prey's coordinates
-        if abs(self.x - unit.x) < speed:
+        if abs(self.x - unit.x) < speed and self.x - unit.x != 0:
             self.x = unit.x
-        if abs(self.y - unit.y) < speed:
-            self.y = unit.y
+        if abs(self.y - unit.y) < speed and self.y - unit.y != 0:
+           self.y = unit.y
