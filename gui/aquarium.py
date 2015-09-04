@@ -23,7 +23,7 @@ class Aquarium(QMainWindow):
         self.game = Game()
         self.load_pictures()
         self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.movement)
+        self.timer.timeout.connect(self.action)
         self.timer.start(40)
 
     def paintEvent(self, event):
@@ -96,9 +96,9 @@ class Aquarium(QMainWindow):
             mirror = mirror.mirrored(True, False)
             mirrored[key] = QtGui.QPixmap().fromImage(mirror)
 
-    def movement(self):
-        """ Incorporates all objects' movement and calls the repaint event."""
-        self.game.move()
+    def action(self):
+        """ Incorporates all objects' actions and calls the repaint event."""
+        self.game.actions()
         self.repaint()
 
     def draw_alien(self, canvas, alien):

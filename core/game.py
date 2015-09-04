@@ -82,14 +82,14 @@ class Game:
             return True
         return False
 
-    def move(self):
+    def actions(self):
         self.track_time()
-        self.move_alien()
-        self.move_fish()
-        self.sink_coin()
-        self.sink_food()
+        self.alien_action()
+        self.fish_action()
+        self.sink_item(self.coins)
+        self.sink_item(self.food)
 
-    def move_alien(self):
+    def alien_action(self):
         """ Chases closest fish or moves randomly if there are none. """
         for alien in self.aliens:
             if self.fishes:
@@ -101,7 +101,7 @@ class Game:
                 alien.move_random()
             self.set_move_frame(alien, alien.image_size, 1600)
 
-    def move_fish(self):
+    def fish_action(self):
         """ Chases closest food if hungry or moves randomly otherwise. """
         for fish in self.fishes:
             # TODO: add starve
@@ -129,18 +129,12 @@ class Game:
                 lowest = current
                 closest = prey
         return closest
-    # TODO: Combine both sinks
-    def sink_coin(self):
-        for coin in self.coins:
-            coin.sink()
-            self.set_sink_frame(coin, coin.image_size, 720)
-        self.coins = [coin for coin in self.coins if coin.sinking]
 
-    def sink_food(self):
-        for food in self.food:
-            food.sink()
-            self.set_sink_frame(food, food.image_size, 400)
-        self.food = [food for food in self.food  if food.sinking]
+    def sink_item(self, items):
+        for item in items:
+            item.sink()
+            self.set_sink_frame(item, item.image_size, 400)
+        items = [item for item in items if item.sinking]
 
     def set_move_frame(self, unit, frame_width, width):
         """ Determines which image will be used for the next repaint. """
