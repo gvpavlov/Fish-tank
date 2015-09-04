@@ -37,11 +37,11 @@ class Fish(Unit, SinkingItem):
             if hungry_time % 20 == 0:
                 self.starve()
 
-    def eat(self):
+    def eat(self, food):
         """ Removes hunger, adds to growth and remembers last feed time. """
         self.hungry = False
         self.last_fed = int(time())
-        self.growth += 1
+        self.growth += food
         if self.growth == 5 or self.growth == 10:
             self.grow_time = int(time())
             self.size += 1

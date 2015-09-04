@@ -16,6 +16,7 @@ class Game:
         self.start_time = time()
         self.tracked_time = time()
         self.weapon_power = 11
+        self.food_quality = 1
 
     def set_objects(self):
         """ Each level starts with only 2 fish. """
@@ -56,6 +57,10 @@ class Game:
     def upgrade_weapon(self):
         """ Upgrades weapon. Used by sidebar button. """
         self.weapon_power += self.weapon_power
+
+    def upgrade_food(self):
+        """ Upgrades food. Used by sidebar button. """
+        self.food_quality += 1
 
     def mouse_press(self, x, y):
         """ Takes action depending on what was clicked. """
@@ -117,7 +122,7 @@ class Game:
                     closest_food = self.get_closest(fish, self.food)
                     fish.chase(closest_food)
                     if self.collision(fish, closest_food):
-                        fish.eat()
+                        fish.eat(self.food_quality)
                         self.food.remove(closest_food)
                 else:
                     fish.move_random()
