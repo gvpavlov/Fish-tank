@@ -20,6 +20,7 @@ class Unit:
         self.time = time()
         self.image_size = image_size
         self.radius = radius
+        self.dead = False
 
         # Variables for choosing the correct image for each unit.
         self.state = 'swim'

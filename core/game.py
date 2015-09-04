@@ -5,6 +5,7 @@ from food import Food
 from unit import Directions
 from random import randint
 from math import sqrt
+from time import time
 
 """ Movement directions """
 LEFT = (-1, 0)
@@ -18,38 +19,17 @@ class Game:
     def __init__(self):
         self.set_objects()
         self.score = 0
+        self.start_time = time()
 
     def set_objects(self):
         self.aliens = [Alien(randint(0, 600), randint(0, 600),
-                             Directions.left, 'lion'),
-                       Alien(randint(0, 600), randint(0, 600),
-                             Directions.left)]
+                             Directions.left, 'lion')]
         self.fishes = [Fish(randint(0, 600), randint(0, 600),
                             Directions.left, 0),
                        Fish(randint(0, 600), randint(0, 600),
-                            Directions.left, 0),
-                       Fish(randint(0, 600), randint(0, 600),
-                            Directions.left, 0),
-                       Fish(randint(0, 600), randint(0, 600),
-                            Directions.left, 1),
-                       Fish(randint(0, 600), randint(0, 600),
-                            Directions.left, 1),
-                       Fish(randint(0, 600), randint(0, 600),
-                            Directions.left, 1),
-                       Fish(randint(0, 600), randint(0, 600),
-                            Directions.left, 2),
-                       Fish(randint(0, 600), randint(0, 600),
-                            Directions.left, 2),
-                       Fish(randint(0, 600), randint(0, 600),
                             Directions.left, 2)]
-        self.coins = [Coin(100, 0, 0),
-                    Coin(200, 0, 0),
-                    Coin(500, 0, 1),
-                    Coin(200, 0, 1)]
-        self.food = [Food(160, 0),
-                     Food(232, 0),
-                     Food(554, 0),
-                     Food(694, 0)]
+        self.coins = []
+        self.food = []
 
     def mouse_press(self, x, y):
         """ Takes action depending on what was clicked. """
@@ -86,6 +66,7 @@ class Game:
         self.sink_food()
 
     def move_alien(self):
+        """ Chases closest fish or moves randomly if there are none. """
         for alien in self.aliens:
             if self.fishes:
                 closest_fish = self.get_closest(alien, self.fishes)
@@ -97,17 +78,27 @@ class Game:
             self.set_move_frame(alien, alien.image_size, 1600)
 
     def move_fish(self):
+        """ Chases closest food if hungry or moves randomly otherwise. """
         for fish in self.fishes:
-            if fish.hungry and self.food:
-                closest_food = self.get_closest(fish, self.food)
-                fish.chase(closest_food)
-                if self.collision(fish, closest_food):
-                    self.food.remove(closest_food)
+            # TODO: Make better
+            if not fish.dead:
+                fish.starve()
+            if fish.dead:
+                fish.sink()
+                if not fish.sinking:
+                    self.fishes.remove(fish)
             else:
-                fish.move_random()
+                if fish.hungry and self.food:
+                    closest_food = self.get_closest(fish, self.food)
+                    fish.chase(closest_food)
+                    if self.collision(fish, closest_food):
+                        self.food.remove(closest_food)
+                else:
+                    fish.move_random()
             self.set_move_frame(fish, fish.image_size, 800)
 
     def get_closest(self, chaser, targets):
+        """ Retuns the closest target to the chaser. """
         closest = targets[0]
         lowest = self.distance((chaser.x, chaser.y), (closest.x, closest.y))
         for prey in targets[1:]:
@@ -116,7 +107,7 @@ class Game:
                 lowest = current
                 closest = prey
         return closest
-
+    # TODO: Combine both sinks
     def sink_coin(self):
         for coin in self.coins:
             coin.sink()
@@ -132,17 +123,22 @@ class Game:
     def set_move_frame(self, unit, frame_width, width):
         """ Determines which image will be used for the next repaint. """
         if unit.previous_direction == unit.direction:
-            if unit.mirrored_rotation:
-                unit.frame -= frame_width
-                if unit.frame <= 0:
-                    unit.frame = 0
-                    unit.state = 'swim'
-                    unit.mirrored_rotation = False
-            else:
+            if unit.dead:
                 unit.frame += frame_width
                 if unit.frame >= width:
-                    unit.frame = 0
-                    unit.state = 'swim'
+                    unit.frame = width - frame_width
+            else:
+                if unit.mirrored_rotation:
+                    unit.frame -= frame_width
+                    if unit.frame <= 0:
+                        unit.frame = 0
+                        unit.state = 'swim'
+                        unit.mirrored_rotation = False
+                else:
+                    unit.frame += frame_width
+                    if unit.frame >= width:
+                        unit.frame = 0
+                        unit.state = 'swim'
         # Start rotation if the different directions are left and right
         # AND the current picture is in the other direction.
         elif ((unit.direction == Directions.right and

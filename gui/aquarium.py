@@ -67,6 +67,8 @@ class Aquarium(QMainWindow):
                 os.path.join(resource_directory, "fish_eat.png")),
             'turn': QtGui.QPixmap(
                 os.path.join(resource_directory, "fish_turn.png")),
+            'hungry_die': QtGui.QPixmap(
+                os.path.join(resource_directory, "fish_die.png")),
             'hungry_swim': QtGui.QPixmap(
                 os.path.join(resource_directory, "hungry_swim.png")),
             'hungry_eat': QtGui.QPixmap(
