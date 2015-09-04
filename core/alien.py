@@ -11,9 +11,9 @@ class Alien(Unit):
             self.kind = 'blue'
 
     def hit(self):
-        self.health -= 5
+        self.health -= 10
 
-    def dead(self):
+    def is_dead(self):
         if self.health <= 0:
             return True
         return False

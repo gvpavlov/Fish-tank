@@ -39,6 +39,7 @@ class Game:
         # Fish
         for fish in self.fishes:
             fish.hungry_check()
+            fish.coin_check()
         self.tracked_time = elapsed
 
     def spawn_alien(self):
@@ -63,7 +64,7 @@ class Game:
         if alien:
             alien[0].hit()
             empty_click = False
-            if alien[0].dead():
+            if alien[0].is_dead():
                 self.aliens.remove(alien[0])
                 self.score += 200
         if empty_click:
@@ -118,6 +119,9 @@ class Game:
                         self.food.remove(closest_food)
                 else:
                     fish.move_random()
+                if fish.drop_coin:
+                    self.coins.append(Coin(fish.x, fish.y, fish.size - 1))
+                    fish.drop_coin = False
             self.set_move_frame(fish, fish.image_size, 800)
 
     def get_closest(self, chaser, targets):
