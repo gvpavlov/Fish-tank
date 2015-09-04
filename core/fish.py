@@ -42,7 +42,8 @@ class Fish(Unit, SinkingItem):
         self.hungry = False
         self.last_fed = int(time())
         self.growth += food
-        if self.growth == 5 or self.growth == 10:
+        if (self.growth >= 5 and self.size == 0 or
+                self.growth >= 10 and self.size == 1):
             self.grow_time = int(time())
             self.size += 1
 

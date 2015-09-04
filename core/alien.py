@@ -11,7 +11,6 @@ class Alien(Unit):
             self.kind = 'blue'
             self.health = 100
 
-
     def hit(self, power):
         self.health -= power
 

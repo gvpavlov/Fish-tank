@@ -65,11 +65,13 @@ class Game:
     def mouse_press(self, x, y):
         """ Takes action depending on what was clicked. """
         empty_click = True
+        # Coin
         coin = [coin for coin in self.coins if self.clicked(x, y, coin)]
         if coin:
             self.score += (coin[0].worth + 1) * 25
             self.coins.remove(coin[0])
             empty_click = False
+        # Alien
         alien = [alien for alien in self.aliens if self.clicked(x, y, alien)]
         if alien:
             alien[0].hit(self.weapon_power)
@@ -77,6 +79,7 @@ class Game:
             if alien[0].is_dead():
                 self.aliens.remove(alien[0])
                 self.score += 200
+        # Nothing
         if empty_click:
             if self.score:
                 self.food.append(Food(x - 20, y - 20))
@@ -109,8 +112,8 @@ class Game:
 
     def fish_action(self):
         """
-        Chases closest food if hungry, moves randomly
-        otherwise, dies if not fed in time.
+        Chases closest food if hungry, moves randomly otherwise,
+        gives a coin from time to time and dies if not fed.
         """
         for fish in self.fishes:
             if fish.dead:
@@ -208,11 +211,11 @@ class Game:
         first_coords = first.collision_circle()
         second_coords = second.collision_circle()
         if (self.distance(first_coords, second_coords) <=
-            first_coords[2] + second_coords[2]):
+                first_coords[2] + second_coords[2]):
             return True
         return False
 
     def distance(self, first_coords, second_coords):
         """ Distance formula: sqrt[(x1 - x2)^2 + (y1 - y2)^2] """
         return sqrt((first_coords[0] - second_coords[0]) ** 2 +
-             (first_coords[1] - second_coords[1]) ** 2)
+                    (first_coords[1] - second_coords[1]) ** 2)
