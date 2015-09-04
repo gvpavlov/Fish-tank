@@ -18,18 +18,35 @@ class Game:
     """ Core class. """
     def __init__(self):
         self.set_objects()
-        self.score = 0
+        self.score = 100
         self.start_time = time()
+        self.tracked_time = time()
 
     def set_objects(self):
-        self.aliens = [Alien(randint(0, 600), randint(0, 600),
-                             Directions.left, 'lion')]
+        """ Each level starts with only 2 fish. """
         self.fishes = [Fish(randint(0, 600), randint(0, 600),
                             Directions.left, 0),
                        Fish(randint(0, 600), randint(0, 600),
                             Directions.left, 2)]
+        self.aliens = []
         self.coins = []
         self.food = []
+
+    def track_time(self):
+        """
+        Controls all the action influenced by time.
+        + 1 for dodging the spawn of the alien when elapsed is 0,
+        self.tracked_time prevents mupltiple spawns in the same second.
+        """
+        elapsed = int(time() - self.start_time) + 1
+        if (self.tracked_time != elapsed) and ((elapsed % 40) == 0):
+            self.spawn_alien()
+        self.tracked_time = elapsed
+
+    def spawn_alien(self):
+        """ Spawns an alien at a random position. """
+        self.aliens.append(Alien(randint(100, 500), randint(100, 500),
+                             Directions.left, randint(0, 1)))
 
     def mouse_press(self, x, y):
         """ Takes action depending on what was clicked. """
@@ -60,6 +77,7 @@ class Game:
         return False
 
     def move(self):
+        self.track_time()
         self.move_alien()
         self.move_fish()
         self.sink_coin()
@@ -80,9 +98,7 @@ class Game:
     def move_fish(self):
         """ Chases closest food if hungry or moves randomly otherwise. """
         for fish in self.fishes:
-            # TODO: Make better
-            if not fish.dead:
-                fish.starve()
+            # TODO: add starve
             if fish.dead:
                 fish.sink()
                 if not fish.sinking:
