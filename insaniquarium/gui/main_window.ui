@@ -189,13 +189,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <zorder>sidebar</zorder>
-         <zorder>sidebar</zorder>
-         <zorder>sidebar</zorder>
         </widget>
        </item>
       </layout>
-      <zorder>aquarium</zorder>
       <zorder>aquarium</zorder>
       <zorder>sidebar</zorder>
      </widget>
@@ -274,7 +270,7 @@
             <enum>Qt::Horizontal</enum>
            </property>
            <property name="sizeType">
-            <enum>QSizePolicy::Maximum</enum>
+            <enum>QSizePolicy::Expanding</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -288,6 +284,24 @@
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <widget class="QPushButton" name="start_game">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Start Game</string>
              </property>
@@ -295,6 +309,12 @@
            </item>
            <item>
             <widget class="QPushButton" name="scores">
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Top Scores</string>
              </property>
@@ -302,6 +322,12 @@
            </item>
            <item>
             <widget class="QPushButton" name="exit">
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Exit</string>
              </property>
@@ -315,7 +341,7 @@
             <enum>Qt::Horizontal</enum>
            </property>
            <property name="sizeType">
-            <enum>QSizePolicy::Maximum</enum>
+            <enum>QSizePolicy::Expanding</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created: Sat Sep  5 14:35:34 2015
+# Created: Sat Sep  5 15:23:35 2015
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -105,21 +105,30 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addItem(spacerItem5)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem6)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.start_game = QtWidgets.QPushButton(self.main_menu)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.start_game.sizePolicy().hasHeightForWidth())
+        self.start_game.setSizePolicy(sizePolicy)
+        self.start_game.setMinimumSize(QtCore.QSize(0, 0))
+        self.start_game.setMaximumSize(QtCore.QSize(400, 16777215))
         self.start_game.setObjectName("start_game")
         self.verticalLayout_3.addWidget(self.start_game)
         self.scores = QtWidgets.QPushButton(self.main_menu)
+        self.scores.setMaximumSize(QtCore.QSize(400, 16777215))
         self.scores.setObjectName("scores")
         self.verticalLayout_3.addWidget(self.scores)
         self.exit = QtWidgets.QPushButton(self.main_menu)
+        self.exit.setMaximumSize(QtCore.QSize(400, 16777215))
         self.exit.setObjectName("exit")
         self.verticalLayout_3.addWidget(self.exit)
         self.horizontalLayout_3.addLayout(self.verticalLayout_3)
-        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem7)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
         spacerItem8 = QtWidgets.QSpacerItem(20, 100, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
