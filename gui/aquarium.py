@@ -1,10 +1,9 @@
 import os
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5 import QtCore
 from PyQt5 import QtGui
-from ui_aquarium import Ui_aquarium
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.abspath(os.path.join(current_directory, os.pardir))
@@ -15,11 +14,9 @@ from game import Game
 from unit import Directions
 
 
-class Aquarium(QMainWindow):
-    def __init__(self):
+class Aquarium(QWidget):
+    def __init__(self, parent):
         super(Aquarium, self).__init__()
-        self.ui = Ui_aquarium()
-        self.ui.setupUi(self)
         self.game = Game()
         self.load_pictures()
         self.timer = QtCore.QTimer(self)
@@ -40,10 +37,6 @@ class Aquarium(QMainWindow):
             self.draw_coin(canvas, coin)
         for food in self.game.food:
             self.draw_food(canvas, food)
-
-    def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Escape:
-            self.close()
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.LeftButton:
