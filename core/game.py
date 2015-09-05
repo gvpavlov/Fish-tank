@@ -10,23 +10,39 @@ from time import time
 
 class Game:
     """ Core class. """
-    def __init__(self):
-        self.set_objects()
+    def __init__(self, constraint):
         self.score = 100
         self.start_time = time()
         self.tracked_time = time()
         self.weapon_power = 11
         self.food_quality = 1
+        self.constraint = constraint
+        self.set_objects()
 
     def set_objects(self):
         """ Each level starts with only 2 fish. """
-        self.fishes = [Fish(randint(0, 600), randint(0, 600),
+        self.fishes = [Fish(self.constraint,
+                            randint(0, self.constraint[1] - 80),
+                            randint(0, self.constraint[1] - 80),
                             Directions.left, 0),
-                       Fish(randint(0, 600), randint(0, 600),
+                       Fish(self.constraint,
+                            randint(0, self.constraint[1] - 80),
+                            randint(0, self.constraint[1] - 80),
                             Directions.left, 0)]
         self.aliens = []
         self.coins = []
         self.food = []
+
+    def constrain(self, constraint):
+        self.constraint = constraint
+        for fish in self.fishes:
+            fish.set_constraint(constraint)
+        for alien in self.aliens:
+            alien.set_constraint(constraint)
+        for coin in self.coins:
+            coin.set_constraint(constraint)
+        for food in self.food:
+            food.set_constraint(constraint)
 
     def track_time(self):
         """
@@ -36,7 +52,7 @@ class Game:
         """
         elapsed = int(time() - self.start_time) + 1
         # Alien
-        if (self.tracked_time != elapsed) and ((elapsed % 40) == 0):
+        if (self.tracked_time != elapsed) and ((elapsed % 10) == 0):
             self.spawn_alien()
         # Fish
         for fish in self.fishes:
@@ -46,14 +62,17 @@ class Game:
 
     def spawn_alien(self):
         """ Spawns an alien at a random location. """
-        self.aliens.append(Alien(randint(100, 500), randint(100, 500),
-                           Directions.left, randint(0, 1)))
+        self.aliens.append(Alien(self.constraint,
+                                 randint(0, self.constraint[1] - 160),
+                                 randint(0, self.constraint[1] - 160),
+                                 Directions.left, randint(0, 1)))
 
     def spawn_fish(self):
         """ Spawns a fish at a random location. Used by sidebar button. """
-        self.fishes.append(Fish(randint(0, 600), randint(0, 600),
-                           Directions.left, 0))
-
+        self.fishes.append(Fish(self.constraint,
+                                randint(0, self.constraint[1] - 80),
+                                randint(0, self.constraint[1] - 80),
+                                Directions.left, 0))
     def upgrade_weapon(self):
         """ Upgrades weapon. Used by sidebar button. """
         self.weapon_power *= 2
@@ -82,7 +101,7 @@ class Game:
         # Nothing
         if empty_click:
             if self.score:
-                self.food.append(Food(x - 20, y - 20))
+                self.food.append(Food(self.constraint, x - 20, y - 20))
                 self.score -= 5
 
     def clicked(self, x, y, unit):
@@ -130,7 +149,8 @@ class Game:
                 else:
                     fish.move_random()
                 if fish.drop_coin:
-                    self.coins.append(Coin(fish.x, fish.y, fish.size - 1))
+                    self.coins.append(Coin(self.constraint, fish.x,
+                                           fish.y, fish.size - 1))
                     fish.drop_coin = False
             self.set_move_frame(fish, fish.image_size, 800)
 

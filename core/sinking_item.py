@@ -1,17 +1,21 @@
 class SinkingItem:
     """ Combines food and coin common trades. """
-    def __init__(self, x, y, image_size, radius):
+    def __init__(self, constraint, x, y, image_size, radius):
         self.x = x
         self.y = y
         self.sinking = True
         self.frame = 0
         self.image_size = image_size
         self.radius = radius
+        self.constraint = constraint
+
+    def set_constraint(self, constraint):
+        self.constraint = constraint
 
     def sink(self):
         """ Sinks the item and changes item state when it hits the bottom. """
         self.y += 2
-        if self.y >= 640:
+        if self.y >= self.constraint[1] - self.image_size:
             self.sinking = False
 
     def collision_circle(self):

@@ -17,11 +17,14 @@ from unit import Directions
 class Aquarium(QWidget):
     def __init__(self, parent):
         super(Aquarium, self).__init__()
-        self.game = Game()
+        self.game = Game((self.size().width(), self.size().height()))
         self.load_pictures()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.action)
         self.timer.start(40)
+
+    def resizeEvent(self, event):
+        self.game.constrain((event.size().width(), event.size().height()))
 
     def paintEvent(self, event):
         canvas = QtGui.QPainter()

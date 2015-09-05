@@ -13,7 +13,7 @@ class Directions:
 
 class Unit:
     """ Basic class for fishes and aliens. """
-    def __init__(self, x, y, direction, image_size, radius):
+    def __init__(self, constraint, x, y, direction, image_size, radius):
         self.x = x
         self.y = y
         self.direction = direction
@@ -21,6 +21,7 @@ class Unit:
         self.image_size = image_size
         self.radius = radius
         self.dead = False
+        self.constraint = constraint
 
         # Variables for choosing the correct image for each unit.
         self.state = 'swim'
@@ -28,6 +29,9 @@ class Unit:
         self.frame = 0
         self.mirrored = False
         self.mirrored_rotation = False
+
+    def set_constraint(self, constraint):
+        self.constraint = constraint
 
     def move_random(self):
         """ General movement pattern for every creature in the game. """
@@ -48,11 +52,11 @@ class Unit:
         Keeps unit from leaving the game window boundaries by
         switching the direction to the opposite one.
         """
-        if self.y >= 540:
+        if self.y >= self.constraint[1] - self.image_size:
             self.direction = Directions.up
         if self.y <= 0:
             self.direction = Directions.down
-        if self.x >= 840:
+        if self.x >= self.constraint[0] - self.image_size:
             self.direction = Directions.left
         if self.x <= 0:
             self.direction = Directions.right
