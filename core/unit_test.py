@@ -4,7 +4,8 @@ from unit import Unit, Directions
 
 class TestUnit(unittest.TestCase):
     def setUp(self):
-        self.unit = Unit(100, 100, Directions.left, 160, 65)
+        self.constraint = (1000, 1000)
+        self.unit = Unit(self.constraint, 100, 100, Directions.left, 160, 65)
 
     def test_init(self):
         self.assertEqual(self.unit.x, 100)
@@ -81,15 +82,15 @@ class TestUnit(unittest.TestCase):
     def test_chase(self):
         x = self.unit.x
         y = self.unit.y
-        prey = Unit(200, 200, Directions.left, 100, 100)
+        prey = Unit(self.constraint, 200, 200, Directions.left, 100, 100)
         self.unit.chase(prey)
         self.assertNotEqual((x, y), (self.unit.x, self.unit.y))
 
-        prey = Unit(98, 100, Directions.left, 100, 100)
+        prey = Unit(self.constraint, 98, 100, Directions.left, 100, 100)
         self.unit.chase(prey)
         self.assertEqual((prey.x, prey.y), (self.unit.x, self.unit.y))
 
-        prey = Unit(100, 98, Directions.left, 100, 100)
+        prey = Unit(self.constraint, 100, 98, Directions.left, 100, 100)
         self.unit.chase(prey)
         self.assertEqual((prey.x, prey.y), (self.unit.x, self.unit.y))
 

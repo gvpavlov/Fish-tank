@@ -9,7 +9,8 @@ from unit import Directions
 
 class TestGame(unittest.TestCase):
     def setUp(self):
-        self.game = Game()
+        self.constraint = (1000, 1000)
+        self.game = Game(self.constraint)
 
     def test_init(self):
         self.assertEqual(self.game.score, 100)
@@ -42,9 +43,10 @@ class TestGame(unittest.TestCase):
         self.assertNotEqual(self.game.food_quality, food)
 
     def test_mouse_press(self):
-        self.game.aliens.append(Alien())
+        self.game.aliens.append(Alien(self.constraint))
         self.game.mouse_press(50, 50)
-        self.assertNotEqual(self.game.aliens[0].health, Alien().health)
+        self.assertNotEqual(self.game.aliens[0].health,
+                            Alien(self.constraint).health)
 
         score = self.game.score
         self.game.mouse_press(1000, 1000)
@@ -65,7 +67,7 @@ class TestGame(unittest.TestCase):
 
     def test_fish_action(self):
         self.game.spawn_fish()
-        self.game.food.append(Food())
+        self.game.food.append(Food(self.constraint))
         self.game.fishes[0].hungry = True
         x = self.game.fishes[0].x
         y = self.game.fishes[0].y
@@ -77,8 +79,8 @@ class TestGame(unittest.TestCase):
         y = self.game.fishes[0].y
         self.game.fishes[0].hungry = False
         self.game.fish_action()
-        self.assertNotEqual((x,y), (self.game.fishes[0].x,
-                            self.game.fishes[0].y))
+        self.assertNotEqual((x, y), (self.game.fishes[0].x,
+                                     self.game.fishes[0].y))
 
         self.game.fishes[0].drop_coin = True
         self.game.fish_action()
@@ -98,21 +100,21 @@ class TestGame(unittest.TestCase):
                               self.game.fishes), Fish)
 
     def test_sink_coin(self):
-        self.game.coins.append(Coin(1000, 1000))
+        self.game.coins.append(Coin(self.constraint, 1500, 1500))
         self.game.sink_coin()
         self.assertEqual(self.game.coins, [])
 
-        self.game.coins.append(Coin())
+        self.game.coins.append(Coin(self.constraint))
         y = self.game.coins[0].y
         self.game.sink_coin()
         self.assertNotEqual(y, self.game.coins[0].y)
 
     def test_sink_food(self):
-        self.game.food.append(Food(1000, 1000))
+        self.game.food.append(Food(self.constraint, 1000, 1000))
         self.game.sink_food()
         self.assertEqual(self.game.food, [])
 
-        self.game.food.append(Food())
+        self.game.food.append(Food(self.constraint))
         y = self.game.food[0].y
         self.game.sink_food()
         self.assertNotEqual(y, self.game.food[0].y)
@@ -167,7 +169,7 @@ class TestGame(unittest.TestCase):
         self.assertFalse(self.game.fishes[0].mirrored)
 
     def test_set_sink_frame(self):
-        self.game.coins.append(Coin())
+        self.game.coins.append(Coin(self.constraint))
         frame = self.game.coins[0].frame
         self.game.set_sink_frame(self.game.coins[0], 80, 800)
         self.assertNotEqual(self.game.coins[0].frame, frame)
@@ -177,17 +179,17 @@ class TestGame(unittest.TestCase):
         self.assertEqual(self.game.coins[0].frame, 0)
 
     def test_collision(self):
-        self.game.coins.append(Coin())
-        self.game.coins.append(Coin())
+        self.game.coins.append(Coin(self.constraint))
+        self.game.coins.append(Coin(self.constraint))
         self.assertTrue(self.game.collision(self.game.coins[0],
                                             self.game.coins[1]))
 
         self.game.coins.append(Coin(500, 500))
         self.assertFalse(self.game.collision(self.game.coins[0],
-                                            self.game.coins[2]))
+                                             self.game.coins[2]))
 
     def test_distance(self):
-        self.assertEqual(self.game.distance((1,1), (3,3)), 2.8284271247461903)
+        self.assertEqual(self.game.distance((0, 0), (0, 1)), 1)
 
 
 if __name__ == '__main__':

@@ -4,7 +4,8 @@ from sinking_item import SinkingItem
 
 class TestSinkingItem(unittest.TestCase):
     def setUp(self):
-        self.item = SinkingItem(100, 100, 40, 14)
+        self.constraint = (1000, 1000)
+        self.item = SinkingItem(self.constraint, 100, 100, 40, 14)
 
     def test_init(self):
         self.assertEqual(self.item.x, 100)

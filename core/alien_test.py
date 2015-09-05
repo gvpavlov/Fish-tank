@@ -5,10 +5,11 @@ from unit import Directions
 
 class TestAlien(unittest.TestCase):
     def setUp(self):
-        self.alien = Alien(100, 100, Directions.left, 1)
+        self.constraint = (1000, 1000)
+        self.alien = Alien(self.constraint, 100, 100, Directions.left, 1)
 
     def test_init_no_params(self):
-        alien = Alien()
+        alien = Alien(self.constraint)
         self.assertEqual(alien.x, 0)
         self.assertEqual(alien.direction, (1, 0))
         self.assertEqual(alien.kind, 'blue')

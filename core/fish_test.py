@@ -5,10 +5,11 @@ from unit import Directions
 
 class TestFish(unittest.TestCase):
     def setUp(self):
-        self.fish = Fish(100, 100, Directions.left, 1)
+        self.constraint = (1000, 1000)
+        self.fish = Fish(self.constraint, 100, 100, Directions.left, 1)
 
     def test_init_no_params(self):
-        fish = Fish()
+        fish = Fish(self.constraint)
         self.assertEqual(fish.x, 0)
         self.assertEqual(fish.y, 0)
         self.assertEqual(fish.direction, (1, 0))

@@ -73,6 +73,7 @@ class Game:
                                 randint(0, self.constraint[1] - 80),
                                 randint(0, self.constraint[1] - 80),
                                 Directions.left, 0))
+
     def upgrade_weapon(self):
         """ Upgrades weapon. Used by sidebar button. """
         self.weapon_power *= 2
