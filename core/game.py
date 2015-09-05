@@ -56,7 +56,7 @@ class Game:
 
     def upgrade_weapon(self):
         """ Upgrades weapon. Used by sidebar button. """
-        self.weapon_power += self.weapon_power
+        self.weapon_power *= 2
 
     def upgrade_food(self):
         """ Upgrades food. Used by sidebar button. """
