@@ -15,9 +15,14 @@ from unit import Directions
 
 
 class Aquarium(QWidget):
+    score_changed = QtCore.pyqtSignal()
+
     def __init__(self, parent):
         super(Aquarium, self).__init__()
         self.game = Game((self.size().width(), self.size().height()))
+        self.score = self.game.score
+        self.score_changed.emit()
+        self.paused = False
         self.load_pictures()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.action)
@@ -40,6 +45,27 @@ class Aquarium(QWidget):
             self.draw_coin(canvas, coin)
         for food in self.game.food:
             self.draw_food(canvas, food)
+
+    @QtCore.pyqtSlot()
+    def spawn_fish(self):
+        self.game.spawn_fish()
+
+    @QtCore.pyqtSlot()
+    def upgrade_weapon(self):
+        self.game.upgrade_weapon()
+
+    @QtCore.pyqtSlot()
+    def upgrade_food(self):
+        self.game.upgrade_food()
+
+    @QtCore.pyqtSlot()
+    def pause(self):
+        self.paused = True
+
+    @QtCore.pyqtSlot()
+    def unpause(self):
+        self.paused = False
+
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.LeftButton:
@@ -94,8 +120,12 @@ class Aquarium(QWidget):
 
     def action(self):
         """ Incorporates all objects' actions and calls the repaint event."""
-        self.game.actions()
-        self.repaint()
+        if not self.paused:
+            self.game.actions()
+            if self.score != self.game.score:
+                self.score = self.game.score
+                self.score_changed.emit()
+            self.repaint()
 
     def draw_alien(self, canvas, alien):
         if alien.mirrored:

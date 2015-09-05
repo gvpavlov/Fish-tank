@@ -52,7 +52,7 @@ class Game:
         """
         elapsed = int(time() - self.start_time) + 1
         # Alien
-        if (self.tracked_time != elapsed) and ((elapsed % 10) == 0):
+        if (self.tracked_time != elapsed) and ((elapsed % 40) == 0):
             self.spawn_alien()
         # Fish
         for fish in self.fishes:
@@ -69,18 +69,24 @@ class Game:
 
     def spawn_fish(self):
         """ Spawns a fish at a random location. Used by sidebar button. """
-        self.fishes.append(Fish(self.constraint,
-                                randint(0, self.constraint[1] - 80),
-                                randint(0, self.constraint[1] - 80),
-                                Directions.left, 0))
+        if self.score >= 100:
+            self.fishes.append(Fish(self.constraint,
+                                    randint(0, self.constraint[1] - 80),
+                                    randint(0, self.constraint[1] - 80),
+                                    Directions.left, 0))
+            self.score -= 100
 
     def upgrade_weapon(self):
         """ Upgrades weapon. Used by sidebar button. """
-        self.weapon_power *= 2
+        if self.score >= 500:
+            self.weapon_power *= 2
+            self.score -= 500
 
     def upgrade_food(self):
         """ Upgrades food. Used by sidebar button. """
-        self.food_quality += 1
+        if self.score >= 300:
+            self.food_quality += 1
+            self.score -= 300
 
     def mouse_press(self, x, y):
         """ Takes action depending on what was clicked. """
