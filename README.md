@@ -1,25 +1,48 @@
 # Insaniquarium
-Това е моят опит да реализирам игричката [Insaniquarium](http://www.popcap.com/insaniquarium)
+This is my attempt at making the game [Insaniquarium](http://www.popcap.com/insaniquarium)
+
+# Requirements
+- After cloning the repository go to the its directory and execute these commands:
+```
+$ python3 setup.py build
+$ python3 setup.py install
+```
+Note: It should install insaniquarium in `/usr/local/lib/python3.4/dist-packages` by default. (At least it did on my computer, requires administrator's permission to install there though.)
+
+- You must have PyQt5 on your computer in order to run the game. If you don't, install the `python3-pyqt5` package using your system's package manager, for example:
+```
+$ sudo apt-get install python3-pyqt5
+```
+
+- To run the game itself, simply execute:
+```
+$ insaniquarium
+```
+Alternatively, you can go to `/Insaniquarium/insaniquarium/gui` and compile the `ui.py` file to run the game:
+```
+$ python3 ui.py
+```
 
 # Gameplay
-Играта ни въвежда в света на рибките. На играча се предоставя аквариум с рибки и той трябва да се грижи за тях и да ги пази от извънземните, които искат да ги изядат.
 
--   Рибки
+The game immerses us in the world of fishes. The player is given an aquarium with fish. He must take care of them and protect them from hungry aliens.
 
-Рибките могат да растат ако бъдат хранени, но може и да се разболеят и умрат ако не им се предоставя храна. Когато една рибка порасне тя започва да пуска парички. С тези пари могат да се закупуват нови рибки и по-добра храна.
+-   Fish
 
--   Извънземни
+The fish grow up if you feed them, but they can also get sick and die if they are not fed frequently. When a fish grows it starts dropping money. To feed a fish simply click on an empty portion of the aquarium and food will drop. Be mindful of the fact that food costs money!
 
-Аквариумът далеч не е спокойно и безопасно място, където просто се отглеждат рибки. От време на време се появяват извънземни, които се опитват да изядат рибките. Тези извънземни могат да бъдат убити от играча с оръжие. Чудовищата варитат в сила, затова и оръжието може да се ъпгрейдва с парите от рибките.
+-   Aliens
 
--   Цел
+The aquarium is not a safe haven where you just take care of fishes. Aliens that try to eat your fish will spawn from time to time. These aliens can be killed by you with a weapon. To kill a monster simply click on it repeatedly. Did I mention that aliens vary in strength? Shoot as fast as you can!
 
-За да се мине едно ниво е необходимо да се съберат достатъчно пари, за да се премине на следващото ниво.
+-   Money
 
-# Допълнителна функционалност
+You can use money to buy more fish and upgrade the quality of the food and the power of your weapon. To collect money simply click on a sinking coin, but be swift, because it's lost forever if it touches the seabed. Money also act as your total score in the game.
 
--   Графична среда, реализирана чрез PyQt.
--   Главно меню - ще съдържа всичките опции, предложени от играта.
--   Различни нива - файлове с данните за всяко ниво, ще могат да бъдат избирани от главното меню.
--   Запамятяване - ще може да запази текущата игра и после да я пусне от главното меню.
--   Лента с опции по време на играта, ще предоставя бутони за закупуване на рибки, ъпгрейдване на оръжието и на храната, и завършване на яйцето.
+
+# Additional functionality
+
+-   Graphical environment, implemented with PyQt5.
+-   Main menu - contains all the game options.
+-   Pause - You can enter the main menu and the game will be paused automatically.
+-   Sidebar where you score is shown that also provides buttons for buying fish and upgrading food quality and weapon power. Also has menu button.
