@@ -1,4 +1,4 @@
-# Insaniquarium
+# Fish tank
 This is my attempt at making the game [Insaniquarium](http://www.popcap.com/insaniquarium)
 
 # Requirements
